@@ -28,7 +28,7 @@
                         <!-- Match items that have at least one media file -->
                         <map:match type="MediaFilesMatcher" pattern="audio">
                             <map:transform type="IncludePageMeta">
-                                <map:parameter name="stylesheet.screen.media#1" value="http://webplayer.yahooapis.com/player-beta.js"/>
+                                <map:parameter name="javascript.ymedia#1" value="http://webplayer.yahooapis.com/player-beta.js"/>
                             </map:transform>
 			                <map:serialize type="xml"/>
                         </map:match>
