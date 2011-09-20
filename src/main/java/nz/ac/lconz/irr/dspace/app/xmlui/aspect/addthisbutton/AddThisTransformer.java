@@ -53,8 +53,10 @@ public class AddThisTransformer extends AbstractDSpaceTransformer {
 			return;
 		}
 		List shareOption = options.addList("share");
+		shareOption.setHead("Share");
 		Item item = shareOption.addItem();
-		item.addXref("http://www.addthis.com/bookmark.php?v=250&amp;pubid=" + addThisPublisher, "", "addthis_button");
-		item.addFigure("http://s7.addthis.com/static/btn/v2/lg-share-en.gif", "Bookmark and Share", "addthis_button");
+		item.addFigure("http://s7.addthis.com/static/btn/v2/lg-share-en.gif",
+				              "http://www.addthis.com/bookmark.php?v=250&amp;pubid=" + addThisPublisher,
+				              "addthis_button").addContent("Bookmark and Share");
 	}
 }
