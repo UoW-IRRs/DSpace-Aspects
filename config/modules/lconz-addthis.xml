@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document xmlns="http://di.tamu.edu/DRI/1.0/" xmlns:i18n="http://apache.org/cocoon/i18n/2.1" version="1.1">
+    <body/>
+    <options>
+        <list id="lconz.addthis" n="addthis">
+            <head>Share</head>
+            <!--
+            <a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=XXXX"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>
+            -->
+            <item>
+                <xref target="http://www.addthis.com/bookmark.php?v=250&amp;pubid=XXXX" rend="addthis_button"><figure source="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" rend="noborder">Bookmark and Share</figure></xref>
+            </item>
+        </list>
+    </options>
+    <meta>
+        <pageMeta>
+            <metadata element="javascript" qualifier="addthis">http://s7.addthis.com/js/250/addthis_widget.js#pubid=XXXX</metadata>
+        </pageMeta>
+    </meta>
+</document>

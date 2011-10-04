@@ -9,9 +9,6 @@
 
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 	<map:components>
-        <map:transformers>
-            <map:transformer name="AddThisTransformer" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.addthisbutton.AddThisTransformer" />
-        </map:transformers>
 		<map:matchers default="wildcard">
 			<map:matcher name="HandleTypeMatcher" src="org.dspace.app.xmlui.aspect.general.HandleTypeMatcher"/>
             <map:matcher name="HandleAuthorizedMatcher" src="org.dspace.app.xmlui.aspect.general.HandleAuthorizedMatcher"/>
@@ -27,16 +24,22 @@
             <map:match pattern="handle/*/*">
                 <map:match type="HandleAuthorizedMatcher" pattern="READ">
                     <map:match type="HandleTypeMatcher" pattern="item,collection,community">
-                        <map:transform type="AddThisTransformer"/>
-			            <map:serialize type="xml"/>
+                        <map:act type="DSpacePropertyFileReader">
+                            <map:parameter name="dspace.dir" value="dspace.dir" />
+                            <map:transform type="Include" src="file://{dspace.dir}/config/modules/lconz-addthis.xml" />
+                        </map:act>
+                        <map:serialize type="xml"/>
                     </map:match>
                 </map:match>
             </map:match>
 
             <!-- Match repository home -->
             <map:match pattern="">
-                <map:transform type="AddThisTransformer"/>
-			    <map:serialize type="xml"/>
+                <map:act type="DSpacePropertyFileReader">
+                    <map:parameter name="dspace.dir" value="dspace.dir" />
+                    <map:transform type="Include" src="file://{dspace.dir}/config/modules/lconz-addthis.xml" />
+                </map:act>
+                <map:serialize type="xml"/>
             </map:match>
 
             <!-- Not a URL we care about, so just pass it on. -->
