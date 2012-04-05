@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+
+    Aspect to include a "read of the week" item on the repository home page
+
+    Andrea Schweer <schweer@waikato.ac.nz>
+    Stefan Mutter <stefanm@waikato.ac.nz>
+
+-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+    <map:components>
+        <map:matchers default="wildcard"/>
+        <map:transformers>
+            <map:transformer name="ReadOfWeekTransformer" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.readofweek.ReadOfWeekTransformer"/>
+        </map:transformers>
+    </map:components>
+
+    <map:pipelines>
+        <map:pipeline>
+
+            <map:generate/>
+
+            <!-- Match dspace home page -->
+            <map:match pattern="">
+                <map:transform type="ReadOfWeekTransformer"/>
+                <map:serialize type="xml"/>
+            </map:match>
+
+            <!-- Not a URL we care about, so just pass it on. -->
+            <map:serialize type="xml"/>
+
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>
