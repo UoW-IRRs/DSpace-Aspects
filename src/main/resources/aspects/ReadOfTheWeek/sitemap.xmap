@@ -13,19 +13,98 @@
         <map:matchers default="wildcard"/>
         <map:transformers>
             <map:transformer name="ReadOfWeekTransformer" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.readofweek.ReadOfWeekTransformer"/>
+            <map:transformer name="ReadOfWeekForm" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.readofweek.ReadOfWeekForm"/>
+            <map:transformer name="ReadOfWeekPreviewForm" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.readofweek.ReadOfWeekPreviewForm"/>
+            <map:transformer name="Navigation" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.readofweek.Navigation"/>
         </map:transformers>
+        <map:selectors>
+            <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
+        </map:selectors>
     </map:components>
+
+    <map:flow language="javascript">
+        <map:script src="readofweek.js"/>
+    </map:flow>
 
     <map:pipelines>
         <map:pipeline>
 
+            <!--
+                               This is the entry / resume point for the
+                               read of the week admin pages
+                           -->
+            <map:match pattern="admin/read-of-the-week">
+                <map:match type="request" pattern="administrative-continue">
+                    <map:call continuation="{1}"/>
+                </map:match>
+                <map:call function="startManageReadOfTheWeek"/>
+            </map:match>
+
             <map:generate/>
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+                    <map:transform type="Navigation"/>
+                </map:when>
+            </map:select>
 
             <!-- Match dspace home page -->
             <map:match pattern="">
                 <map:transform type="ReadOfWeekTransformer"/>
                 <map:serialize type="xml"/>
             </map:match>
+
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+
+                    <!-- Flow pages
+
+                                    These pages may only be reached through a flow script. While typicaly all
+                                    the user sees in their url bar is a short url like /admin/epeople or
+                                    /admin/groups, in reality there is another url being used. The flow scripts
+                                    always operate on these simple url, but once the particular state is determined
+                                    an distinquising part is appended to the url for the particular state. Below are
+                                    all those url.
+                    -->
+                    <map:match type="WildcardParameterMatcher" pattern="true">
+                        <map:parameter name="parameter-name" value="flow"/>
+                        <map:parameter name="flow" value="{flow-attribute:flow}"/>
+
+
+                        <!-- Edit read of the week pages -->
+
+                        <!--
+                            Allow the user to find an item by it's handle or internal ID.
+                         -->
+                        <map:match pattern="admin/read-of-the-week/status">
+                            <map:transform type="ReadOfWeekForm">
+                                <map:parameter name="identifier" value="{flow-attribute:identifier}"/>
+                                <map:parameter name="errors" value="{flow-attribute:errors}"/>
+                            </map:transform>
+                        </map:match>
+
+                        <!--
+
+                                                                            -->
+                        <map:match pattern="admin/read-of-the-week/preview">
+                            <map:transform type="ReadOfWeekPreviewForm">
+                                <map:parameter name="itemID" value="{flow-attribute:itemID}"/>
+                            </map:transform>
+                        </map:match>
+
+                        <!--
+                             Set new read of the week
+                         -->
+                        <map:match pattern="admin/read-of-the-week/pick">
+                            <map:transform type="ReadOfWeekForm">
+                                <map:parameter name="itemID" value="{flow-attribute:itemID}"/>
+                            </map:transform>
+                        </map:match>
+
+                    </map:match>
+                </map:when>
+            </map:select>
 
             <!-- Not a URL we care about, so just pass it on. -->
             <map:serialize type="xml"/>

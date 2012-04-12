@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<catalogue xml:lang="en" xmlns:i18n="http://apache.org/cocoon/i18n/2.1" xmlns="http://apache.org/cocoon/i18n/2.1">
+
+    <!--
+      The format used by all keys is as follows
+
+      xmlui.<Aspect>.<Java Class>.<name>
+
+      There are a few exceptions to this nameing format,
+      1) Some general keys are in the xmlui.general namespace
+         because they are used very frequently.
+      2) Some general keys which are specific to a particular aspect
+         may be found at xmlui.<Aspect> without specifiying a
+         particular java class.
+      -->
+
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekTransformer.head">Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.trail">Manage Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.title">Manage Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.head1">Manage Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.head_current">Currently selected Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.head_find">Look up new Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.no_current">Currently, no item is selected as the read of the week.</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekPreviewForm.submit_confirm">Select as Read of the Week</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekPreviewForm.success">Read of the Week changed successfully.</message>
+</catalogue>
