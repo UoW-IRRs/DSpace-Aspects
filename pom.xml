@@ -42,4 +42,10 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <scm>
+      <connection>scm:git:git://github.com/lconz-irr/DSpace-Aspects.git</connection>
+      <url>https://github.com/lconz-irr/DSpace-Aspects</url>
+      <developerConnection>scm:git:ssh://git@github.com/lconz-irr/DSpace-Aspects.git</developerConnection>
+    </scm>
 </project>
