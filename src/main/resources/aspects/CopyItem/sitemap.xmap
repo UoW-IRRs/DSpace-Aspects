@@ -19,9 +19,6 @@
         <map:selectors>
             <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
         </map:selectors>
-        <map:actions>
-            <map:action name="log" src="org.apache.cocoon.acting.LogAction"/>
-        </map:actions>
     </map:components>
 
     <map:flow language="javascript">
@@ -32,11 +29,6 @@
         <map:pipeline>
 
             <map:match pattern="admin/copy-item">
-                <map:act type="log">
-                    <map:parameter name="level" value="info"/>
-                    <map:parameter name="message" value="looking at copy-item url"/>
-                    <map:parameter name="console" value="true"/>
-                </map:act>
                 <map:match type="request" pattern="administrative-continue">
                     <map:call continuation="{1}"/>
                 </map:match>
