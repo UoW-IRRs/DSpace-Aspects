@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+
+    Aspect to allow an administrator to deposit a copy of an already deposited item
+
+    Andrea Schweer <schweer@waikato.ac.nz>
+
+-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+    <map:components>
+        <map:matchers default="wildcard">
+            <map:matcher name="HandleTypeMatcher" src="org.dspace.app.xmlui.aspect.general.HandleTypeMatcher"/>
+        </map:matchers>
+        <map:transformers>
+            <map:transformer name="CopyItemPreviewForm" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.copyitem.CopyItemPreviewForm"/>
+            <map:transformer name="Navigation" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.copyitem.Navigation"/>
+        </map:transformers>
+        <map:selectors>
+            <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
+        </map:selectors>
+        <map:actions>
+            <map:action name="log" src="org.apache.cocoon.acting.LogAction"/>
+        </map:actions>
+    </map:components>
+
+    <map:flow language="javascript">
+        <map:script src="copyitem.js"/>
+    </map:flow>
+
+    <map:pipelines>
+        <map:pipeline>
+
+            <map:match pattern="admin/copy-item">
+                <map:act type="log">
+                    <map:parameter name="level" value="info"/>
+                    <map:parameter name="message" value="looking at copy-item url"/>
+                    <map:parameter name="console" value="true"/>
+                </map:act>
+                <map:match type="request" pattern="administrative-continue">
+                    <map:call continuation="{1}"/>
+                </map:match>
+                <!--<map:match type="request" pattern="itemID">-->
+                <map:call function="startDepositCopy"/>
+                <!--</map:match>-->
+            </map:match>
+
+            <map:generate/>
+
+            <map:match pattern="handle/*/*">
+                <map:match type="HandleTypeMatcher" pattern="item">
+                    <map:select type="AuthenticatedSelector">
+                        <map:when test="administrator">
+                            <map:transform type="Navigation"/>
+                        </map:when>
+                    </map:select>
+                </map:match>
+            </map:match>
+
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+                    <!-- Flow pages
+
+                                    These pages may only be reached through a flow script. While typically all
+                                    the user sees in their url bar is a short url like /admin/epeople or
+                                    /admin/groups, in reality there is another url being used. The flow scripts
+                                    always operate on these simple url, but once the particular state is determined
+                                    a distinguishing part is appended to the url for the particular state. Below are
+                                    all those urls.
+                    -->
+                    <map:match type="WildcardParameterMatcher" pattern="true">
+                        <map:parameter name="parameter-name" value="flow"/>
+                        <map:parameter name="flow" value="{flow-attribute:flow}"/>
+
+                        <!--
+
+                                                                            -->
+                        <map:match pattern="admin/copy-item/preview">
+                            <map:transform type="CopyItemPreviewForm">
+                                <map:parameter name="itemID" value="{flow-attribute:itemID}"/>
+                            </map:transform>
+                        </map:match>
+
+                    </map:match>
+                </map:when>
+                <map:otherwise>
+                    <map:match pattern="admin/copy-item">
+                        <map:act type="StartAuthentication"/>
+                    </map:match>
+                </map:otherwise>
+            </map:select>
+
+            <!-- Not a URL we care about, so just pass it on. -->
+            <map:serialize type="xml"/>
+
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>

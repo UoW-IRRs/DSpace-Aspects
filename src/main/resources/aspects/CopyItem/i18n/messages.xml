@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<catalogue xml:lang="en" xmlns:i18n="http://apache.org/cocoon/i18n/2.1" xmlns="http://apache.org/cocoon/i18n/2.1">
+
+    <!--
+      The format used by all keys is as follows
+
+      xmlui.<Aspect>.<Java Class>.<name>
+
+      There are a few exceptions to this nameing format,
+      1) Some general keys are in the xmlui.general namespace
+         because they are used very frequently.
+      2) Some general keys which are specific to a particular aspect
+         may be found at xmlui.<Aspect> without specifiying a
+         particular java class.
+      -->
+
+    <message key="xmlui.aspect.CopyItem.Navigation.link">Submit a Similar Item</message>
+
+    <message key="xmlui.aspect.CopyItem.success">Successfully started the submission of a similar item.</message>
+    <message key="xmlui.aspect.CopyItem.error">There was a problem with submitting a similar item.</message>
+
+
+    <message key="xmlui.aspect.CopyItem.CopyItemForm.trail">Submit similar</message>
+    <message key="xmlui.aspect.CopyItem.CopyItemForm.title">Submit a similar item</message>
+    <message key="xmlui.aspect.CopyItem.CopyItemForm.head1">Submit a similar item</message>
+    <message key="xmlui.aspect.CopyItem.CopyItemForm.help">Choose "Start submission" to create a new submission based on the item below.</message>
+    <message key="xmlui.aspect.CopyItem.CopyItemForm.submit_confirm">Start submission</message>
+</catalogue>
