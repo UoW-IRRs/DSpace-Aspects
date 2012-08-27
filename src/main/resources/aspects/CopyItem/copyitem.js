@@ -5,6 +5,7 @@ importClass(Packages.org.dspace.app.xmlui.utils.FlowscriptUtils);
 importClass(Packages.org.dspace.app.xmlui.utils.ContextUtil);
 importClass(Packages.org.dspace.app.xmlui.aspect.administrative.FlowItemUtils);
 importClass(Packages.nz.ac.lconz.irr.dspace.app.xmlui.aspect.copyitem.FlowCopyItem);
+importClass(Packages.nz.ac.lconz.irr.dspace.app.xmlui.aspect.copyitem.CopyItemUtils);
 importClass(Packages.org.dspace.content.Item);
 
 /**
@@ -117,24 +118,18 @@ function sendPage(uri,bizData,result)
 }
 
 /**
- * Return whether the currently authenticated eperson is an
- * administrator.
- */
-function isAdministrator() {
-    return AuthorizeManager.isAdmin(getDSContext());
-}
-
-/**
- * Assert that the currently authenticated eperson is an administrator.
+ * Assert that the currently authenticated eperson can deposit an item.
  * If they are not then an error page is returned and this function
  * will NEVER return.
  */
-function assertAdministrator() {
-
-    if ( ! isAdministrator()) {
+function assertCanDepositCopy(itemID) {
+    cocoon.log.warn("asserting whether user can deposit copy, item id = " + itemID);
+    if (!CopyItemUtils.canDepositCopy(getDSContext(), itemID)) {
+        cocoon.log.warn("not authorised to deposit copy");
         sendPage("admin/not-authorized");
         cocoon.exit();
     }
+    cocoon.log.warn("user is authorised");
 }
 
 
@@ -148,7 +143,8 @@ function assertAdministrator() {
  */
 function startDepositCopy()
 {
-    assertAdministrator();
+    cocoon.log.warn("starting deposit, item id = " + cocoon.request.get("itemID"));
+    assertCanDepositCopy(cocoon.request.get("itemID"));
 
     doDepositCopy();
 
@@ -177,9 +173,10 @@ function doDepositCopy()
     {
         // Search for the identifier
         identifier = cocoon.request.get("itemID");
+        cocoon.log.warn("resolving item identifier");
         result = FlowItemUtils.resolveItemIdentifier(getDSContext(),identifier);
 
-        // If an item was found then allow the user to pick the item as read of the week.
+        // If an item was found then allow the user to deposit a copy of the item.
         if (result != null && result.getParameter("itemID"))
         {
             var itemID = result.getParameter("itemID");
@@ -194,12 +191,15 @@ function doDepositCopy()
 
 function makeCopy(itemID)
 {
-    var result;
+    cocoon.log.warn("making copy of item " + itemID);
+    var result = null;
     do {
-        assertAdministrator();
+        assertCanDepositCopy(itemID);
 
+        cocoon.log.warn("sending to preview page");
         sendPageAndWait("admin/copy-item/preview",{"itemID":itemID},result);
         result = null;
+        cocoon.log.warn("have returned from preview page");
 
         if (cocoon.request.get("submit_cancel"))
         {
@@ -214,11 +214,11 @@ function makeCopy(itemID)
         }
         else if (cocoon.request.get("submit_confirm"))
         {
-            var result = FlowCopyItem.processCopyItem(getDSContext(), itemID);
+            result = FlowCopyItem.processCopyItem(getDSContext(), itemID);
 
             if (result.getContinue) {
                 var workspaceID = result.getParameter("workspaceID");
-                var contextPath = cocoon.request.getContextPath();
+                contextPath = cocoon.request.getContextPath();
                 cocoon.redirectTo(contextPath + "/submit?workspaceID=" + workspaceID, true);
                 getDSContext().complete();
                 cocoon.exit();

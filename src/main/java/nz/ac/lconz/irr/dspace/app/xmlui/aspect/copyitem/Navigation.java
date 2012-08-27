@@ -7,6 +7,7 @@ import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
+import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.app.xmlui.wing.element.Options;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
@@ -26,14 +27,11 @@ import java.util.Map;
 public class Navigation extends AbstractDSpaceTransformer {
 
 	private static final Message T_copyitem_navlink = message("xmlui.aspect.CopyItem.Navigation.link");
+	private static final Message T_contextmenu_head = message("xmlui.administrative.Navigation.context_head");
 	private static final Logger log = Logger.getLogger(Navigation.class);
 
 	@Override
 	public void addOptions(Options options) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
-		if (!AuthorizeManager.isAdmin(context)) {
-			return; // nothing to do
-		}
-
 		Context context = ContextUtil.obtainContext(objectModel);
 		DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
 
@@ -41,12 +39,20 @@ public class Navigation extends AbstractDSpaceTransformer {
 			return; // nothing to do
 		}
 
+		int itemID = dso.getID();
+
+		if (!CopyItemUtils.canDepositCopy(context, itemID)) {
+			return; // nothing to do
+		}
+
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("itemID", String.valueOf(dso.getID()));
+		params.put("itemID", String.valueOf(itemID));
 
 		String url = generateURL(contextPath + "/admin/copy-item", params);
 
-		options.addList("context").addItemXref(url, T_copyitem_navlink);
+		List contextList = options.addList("context");
+		contextList.setHead(T_contextmenu_head);
+		contextList.addItemXref(url, T_copyitem_navlink);
 		log.debug("Added link " + url + " to context list in options");
 	}
 }
