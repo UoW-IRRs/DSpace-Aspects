@@ -21,9 +21,6 @@
             <map:selector name="CopyItemSelector" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.copyitem.CopyItemSelector"/>
             <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
         </map:selectors>
-        <map:actions>
-            <map:action name="log" src="org.apache.cocoon.acting.LogAction" />
-        </map:actions>
     </map:components>
 
     <map:flow language="javascript">
@@ -36,38 +33,13 @@
             <!-- make sure user is at least logged in -->
             <map:select type="AuthenticatedSelector">
                 <map:when test="eperson">
-
-                    <map:act type="log">
-                        <map:parameter name="level" value="warn" />
-                        <map:parameter name="message" value="Someone is logged in" />
-                        <map:parameter name="console" value="true" />
-                    </map:act>
-
                     <map:select type="CopyItemSelector">
                         <map:when test="can-deposit-copy">
-                            <map:act type="log">
-                                <map:parameter name="level" value="warn" />
-                                <map:parameter name="message" value="Someone is logged in who can submit items" />
-                                <map:parameter name="console" value="true" />
-                            </map:act>
-
                             <map:match pattern="admin/copy-item">
                                 <map:match type="request" pattern="administrative-continue">
-                                    <map:act type="log">
-                                        <map:parameter name="level" value="warn" />
-                                        <map:parameter name="message" value="Continuing request" />
-                                        <map:parameter name="console" value="true" />
-                                    </map:act>
                                     <map:call continuation="{1}"/>
                                 </map:match>
-                                <!--<map:match type="request" pattern="itemID">-->
-                                <map:act type="log">
-                                    <map:parameter name="level" value="warn" />
-                                    <map:parameter name="message" value="Starting deposit" />
-                                    <map:parameter name="console" value="true" />
-                                </map:act>
                                 <map:call function="startDepositCopy"/>
-                                <!--</map:match>-->
                             </map:match>
 
                             <map:generate/>
@@ -95,18 +67,7 @@
                                 <map:parameter name="parameter-name" value="flow"/>
                                 <map:parameter name="flow" value="{flow-attribute:flow}"/>
 
-                                <map:act type="log">
-                                    <map:parameter name="level" value="warn" />
-                                    <map:parameter name="message" value="Checking for preview pattern" />
-                                    <map:parameter name="console" value="true" />
-                                </map:act>
-
                                 <map:match pattern="admin/copy-item/preview">
-                                    <map:act type="log">
-                                        <map:parameter name="level" value="warn" />
-                                        <map:parameter name="message" value="Calling preview form transformer" />
-                                        <map:parameter name="console" value="true" />
-                                    </map:act>
                                     <map:transform type="CopyItemPreviewForm">
                                         <map:parameter name="itemID" value="{flow-attribute:itemID}"/>
                                     </map:transform>
@@ -116,13 +77,6 @@
                             <map:serialize type="xml"/>
                         </map:when>
                         <map:otherwise>
-
-                            <map:act type="log">
-                                <map:parameter name="level" value="warn" />
-                                <map:parameter name="message" value="Someone is logged in but they can't submit items " />
-                                <map:parameter name="console" value="true" />
-                            </map:act>
-
                             <!-- user logged in but cannot deposit copy -->
                             <map:generate/>
                             <map:match pattern="admin/copy-item">
@@ -133,11 +87,6 @@
                     </map:select>
                 </map:when>
                 <map:otherwise>
-                    <map:act type="log">
-                        <map:parameter name="level" value="warn" />
-                        <map:parameter name="message" value="Nobody is logged in" />
-                        <map:parameter name="console" value="true" />
-                    </map:act>
                     <!-- no user logged in -->
                     <map:generate/>
                     <map:match pattern="admin/copy-item">

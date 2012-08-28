@@ -123,13 +123,10 @@ function sendPage(uri,bizData,result)
  * will NEVER return.
  */
 function assertCanDepositCopy(itemID) {
-    cocoon.log.warn("asserting whether user can deposit copy, item id = " + itemID);
     if (!CopyItemUtils.canDepositCopy(getDSContext(), itemID)) {
-        cocoon.log.warn("not authorised to deposit copy");
         sendPage("admin/not-authorized");
         cocoon.exit();
     }
-    cocoon.log.warn("user is authorised");
 }
 
 
@@ -143,7 +140,6 @@ function assertCanDepositCopy(itemID) {
  */
 function startDepositCopy()
 {
-    cocoon.log.warn("starting deposit, item id = " + cocoon.request.get("itemID"));
     assertCanDepositCopy(cocoon.request.get("itemID"));
 
     doDepositCopy();
@@ -173,7 +169,6 @@ function doDepositCopy()
     {
         // Search for the identifier
         identifier = cocoon.request.get("itemID");
-        cocoon.log.warn("resolving item identifier");
         result = FlowItemUtils.resolveItemIdentifier(getDSContext(),identifier);
 
         // If an item was found then allow the user to deposit a copy of the item.
@@ -191,15 +186,12 @@ function doDepositCopy()
 
 function makeCopy(itemID)
 {
-    cocoon.log.warn("making copy of item " + itemID);
     var result = null;
     do {
         assertCanDepositCopy(itemID);
 
-        cocoon.log.warn("sending to preview page");
         sendPageAndWait("admin/copy-item/preview",{"itemID":itemID},result);
         result = null;
-        cocoon.log.warn("have returned from preview page");
 
         if (cocoon.request.get("submit_cancel"))
         {
