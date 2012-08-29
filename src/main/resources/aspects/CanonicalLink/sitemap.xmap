@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+
+    Aspect to include a canonical link in the DRI of full item view pages
+
+    Andrea Schweer <schweer@waikato.ac.nz>
+
+-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+  <map:components>
+    <map:matchers default="wildcard">
+      <map:matcher name="match-param-show" 
+		   src="org.apache.cocoon.matching.WildcardRequestParameterMatcher" 
+		   logger="sitemap.matcher.wildcard-request">
+	<parameter-name>show</parameter-name>
+      </map:matcher>
+    </map:matchers>
+    <map:actions>
+      <map:action name="log" src="org.apache.cocoon.acting.LogAction" />
+    </map:actions>
+  </map:components>
+  
+  <map:pipelines>
+    <map:pipeline>
+      
+      <map:generate/>
+      
+      <!-- Match handle pages - this also matches collections / communities -->
+      <map:match pattern="handle/*/*">
+	<map:match type="match-param-show" pattern="full">
+	  <map:act type="log">
+	    <map:parameter name="level" value="info" />
+	    <map:parameter name="message" value="Full item view" />
+	    <map:parameter name="console" value="true" />
+	  </map:act>
+	  
+	  <map:transform type="IncludePageMeta">
+	    <map:parameter name="rel.canonical" value="{request:contextPath}/handle/{../1}/{../2}"/>
+	  </map:transform>
+	  <map:serialize type="xml"/>
+	</map:match>
+      </map:match>
+      
+      <!-- Not a URL we care about, so just pass it on. -->
+      <map:serialize type="xml"/>
+      
+    </map:pipeline>
+  </map:pipelines>
+</map:sitemap>
