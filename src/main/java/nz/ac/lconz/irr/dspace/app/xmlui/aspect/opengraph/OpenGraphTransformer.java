@@ -161,7 +161,7 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 			result.append(propertyName);
 			result.append("\" content=\"");
 			result.append(value);
-			result.append("\">\n");
+			result.append("\"/>\n");
 		}
 		return result;
 	}
