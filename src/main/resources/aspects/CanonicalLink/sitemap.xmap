@@ -16,9 +16,6 @@
 	<parameter-name>show</parameter-name>
       </map:matcher>
     </map:matchers>
-    <map:actions>
-      <map:action name="log" src="org.apache.cocoon.acting.LogAction" />
-    </map:actions>
   </map:components>
   
   <map:pipelines>
@@ -29,12 +26,6 @@
       <!-- Match handle pages - this also matches collections / communities -->
       <map:match pattern="handle/*/*">
 	<map:match type="match-param-show" pattern="full">
-	  <map:act type="log">
-	    <map:parameter name="level" value="info" />
-	    <map:parameter name="message" value="Full item view" />
-	    <map:parameter name="console" value="true" />
-	  </map:act>
-	  
 	  <map:transform type="IncludePageMeta">
 	    <map:parameter name="rel.canonical" value="{request:contextPath}/handle/{../1}/{../2}"/>
 	  </map:transform>
