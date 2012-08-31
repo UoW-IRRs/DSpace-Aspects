@@ -184,12 +184,12 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 		pageMeta.addMetadata("xhtml_head_prefix", "article").addContent("http://ogp.me/ns/article#");
 	}
 
-	private String buildBitstreamUrl(Item item, Bitstream bitstream) {
+	private String buildBitstreamUrl(Item item, Bitstream bitstream) throws UIException {
 		StringBuilder bitstreamUrl = new StringBuilder(ConfigurationManager.getProperty("dspace.url"));
 		bitstreamUrl.append("/bitstream/handle/");
 		bitstreamUrl.append(item.getHandle());
 		bitstreamUrl.append("/");
-		bitstreamUrl.append(bitstream.getName());
+		bitstreamUrl.append(encodeForURL(bitstream.getName()));
 		bitstreamUrl.append("?sequence=");
 		bitstreamUrl.append(bitstream.getSequenceID());
 		return bitstreamUrl.toString();
