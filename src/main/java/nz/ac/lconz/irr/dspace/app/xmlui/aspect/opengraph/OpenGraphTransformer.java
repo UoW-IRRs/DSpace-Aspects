@@ -4,6 +4,7 @@ import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.util.HashUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.excalibur.source.SourceValidity;
+import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.HandleUtil;
@@ -11,17 +12,19 @@ import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.authorize.AuthorizeException;
+import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.*;
 import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Constants;
+import org.dspace.eperson.Group;
 import org.dspace.handle.HandleManager;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +35,7 @@ import java.util.Locale;
  */
 public class OpenGraphTransformer extends AbstractDSpaceTransformer implements CacheableProcessingComponent {
 	private DSpaceValidity validity = null;
+	private Logger log = Logger.getLogger(OpenGraphTransformer.class);
 
 	/**
 	 * Generates the unique caching key - this references the item.
@@ -102,7 +106,33 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 		String siteName = ConfigurationManager.getProperty("dspace.name");
 		meta.append(makePropertyStatement("og:site_name", siteName));
 
-		// TODO images
+		// images - take image files from content bundle, or thumbnails if there aren't any images, but in either case only public ones
+		List<String> imageUrls = new ArrayList<String>();
+		Bundle[] contentBundles = item.getBundles(Constants.CONTENT_BUNDLE_NAME);
+		for (Bundle bundle : contentBundles) {
+			if (anonymousCanRead(bundle)) {
+				for (Bitstream bitstream : bundle.getBitstreams()) {
+					if (anonymousCanRead(bitstream) && isImageFile(bitstream)) {
+						imageUrls.add(buildBitstreamUrl(item, bitstream));
+					}
+				}
+			}
+		}
+		if (imageUrls.isEmpty()) {
+			Bundle[] thumbnailBundles = item.getBundles("THUMBNAIL");
+			for (Bundle bundle : thumbnailBundles) {
+				if (anonymousCanRead(bundle)) {
+					for (Bitstream bitstream : bundle.getBitstreams()) {
+						if (anonymousCanRead(bitstream) && isImageFile(bitstream)) {
+							imageUrls.add(buildBitstreamUrl(item, bitstream));
+						}
+					}
+				}
+			}
+		}
+		for (String url : imageUrls) {
+			meta.append(makePropertyStatement("og:image", url));
+		}
 
 		// title
 		String itemName = item.getName();
@@ -152,6 +182,36 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 		// <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
 		pageMeta.addMetadata("xhtml_head_prefix", "og").addContent("http://ogp.me/ns#");
 		pageMeta.addMetadata("xhtml_head_prefix", "article").addContent("http://ogp.me/ns/article#");
+	}
+
+	private String buildBitstreamUrl(Item item, Bitstream bitstream) {
+		StringBuilder bitstreamUrl = new StringBuilder(ConfigurationManager.getProperty("dspace.url"));
+		bitstreamUrl.append("/bitstream/handle/");
+		bitstreamUrl.append(item.getHandle());
+		bitstreamUrl.append("/");
+		bitstreamUrl.append(bitstream.getName());
+		bitstreamUrl.append("?sequence=");
+		bitstreamUrl.append(bitstream.getSequenceID());
+		return bitstreamUrl.toString();
+	}
+
+	private boolean isImageFile(Bitstream bitstream) {
+		return !bitstream.getFormat().isInternal() && bitstream.getFormat().getMIMEType().startsWith("image/");
+	}
+
+	private boolean anonymousCanRead(DSpaceObject dso) {
+		try {
+			Group[] readGroups = AuthorizeManager.getAuthorizedGroups(context, dso, Constants.READ);
+			for (Group group : readGroups) {
+				if (group.getID() == 0) {
+					return true;
+				}
+			}
+			return false;
+		} catch (SQLException e) {
+			log.warn("Cannot determine whether object type " + dso.getType() + ", id=" + dso.getID() + "is publicly readable, assuming it isn't");
+			return false;
+		}
 	}
 
 	private StringBuilder makePropertyStatement(Object propertyName, String value) {
