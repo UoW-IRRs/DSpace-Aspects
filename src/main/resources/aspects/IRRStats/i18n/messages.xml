@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<catalogue xml:lang="en" xmlns="http://apache.org/cocoon/i18n/2.1">
+
+    <!--
+      The format used by all keys is as follows
+
+      xmlui.<Aspect>.<Java Class>.<name>
+
+      There are a few exceptions to this naming format,
+      1) Some general keys are in the xmlui.general namespace
+         because they are used very frequently.
+      2) Some general keys which are specific to a particular aspect
+         may be found at xmlui.<Aspect> without specifying a
+         particular java class.
+      -->
+
+    <message key="xmlui.aspect.IRRStats.Navigation.link">IRR Stats</message>
+
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.trail">IRR Stats</message>
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.title">IRR Stats</message>
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.head">IRR Stats</message>
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.not_authorised">You do not have permission to view the IRR statistics.</message>
+
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.help">IRR statistics data for 2012. The values for metrics 1-4 and 7 are for 0:00am on January 1st, 2013. The values for metrics 5, 6 and 8-10 are for 0:00am January 1st, 2013 to 0:00am January 1st, 2013.</message>
+
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.error">There was a problem retrieving the IRR statistics data. More details are available in the DSpace log file.</message>
+
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.tablehead_id">#</message>
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.tablehead_metric">Metric</message>
+    <message key="xmlui.aspect.IRRStats.IRRStatsTransformer.tablehead_value">Value</message>
+
+    <message key="xmlui.aspect.IRRStats.metric.num-public-fulltext">Number of complete works available externally</message>
+    <message key="xmlui.aspect.IRRStats.metric.num-internal-fulltext">Number of complete works for internal access only</message>
+    <message key="xmlui.aspect.IRRStats.metric.num-total-fulltext">Total number of complete works (1+2)</message>
+    <message key="xmlui.aspect.IRRStats.metric.num-metadata">Number of metadata-only records</message>
+    <message key="xmlui.aspect.IRRStats.metric.added-metadata">Metadata-only records added</message>
+    <message key="xmlui.aspect.IRRStats.metric.added-fulltext">Complete works added</message>
+    <message key="xmlui.aspect.IRRStats.metric.num-grand-total">Total number of items (3+7 = 1+2+7)</message>
+    <message key="xmlui.aspect.IRRStats.metric.access-fulltext">Accesses to complete works</message>
+    <message key="xmlui.aspect.IRRStats.metric.access-metadata">Accesses to metadata-only records</message>
+    <message key="xmlui.aspect.IRRStats.metric.access-total">Total accesses (8+9)</message>
+
+</catalogue>

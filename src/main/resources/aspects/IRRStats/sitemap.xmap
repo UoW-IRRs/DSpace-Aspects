@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!--
+
+    Aspect to calculate and display IRR stats for CAIRRS/CAUL
+
+    Andrea Schweer <schweer@waikato.ac.nz>
+
+-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+    <map:components>
+        <map:matchers default="wildcard"/>
+        <map:transformers>
+            <map:transformer name="IRRStatsTransformer" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.irrstats.IRRStatsTransformer"/>
+            <map:transformer name="Navigation" src="nz.ac.lconz.irr.dspace.app.xmlui.aspect.irrstats.Navigation"/>
+            <map:transformer name="NotAuthorized" src="org.dspace.app.xmlui.aspect.administrative.NotAuthorized"/>
+        </map:transformers>
+        <map:selectors>
+            <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
+        </map:selectors>
+    </map:components>
+
+    <map:pipelines>
+        <map:pipeline>
+
+            <!--
+                               This is the entry / resume point for the
+                               read of the week admin pages
+                           -->
+            <map:match pattern="admin/irr-stats">
+                <map:select type="AuthenticatedSelector">
+                    <map:when test="administrator">
+                        <map:transform type="IRRStatsTransformer"/>
+                    </map:when>
+                    <map:when test="eperson">
+                        <map:transform type="NotAuthorized"/>
+                    </map:when>
+                    <map:otherwise>
+                        <!-- no user logged in -->
+                        <map:generate/>
+                        <map:match pattern="admin/copy-item">
+                            <map:act type="StartAuthentication"/>
+                        </map:match>
+                    </map:otherwise>
+                </map:select>
+            </map:match>
+
+            <map:generate/>
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+                    <map:transform type="Navigation"/>
+                </map:when>
+            </map:select>
+
+            <map:serialize type="xml"/>
+
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>
