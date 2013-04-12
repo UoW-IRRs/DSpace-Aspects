@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Andrea Schweer schweer@waikato.ac.nz for the LCoNZ Institutional Research Repositories
@@ -17,7 +19,7 @@ public class IRRStatsCreator {
 	public static void main(String[] args) throws SQLException, IOException {
 		if (args.length < 3) {
 			System.out.println("Usage: IRRStatsCreator fromDate toDate filename");
-			System.out.println("  Dates given as yyyy-MM-dd; date range is inclusive (eg for all of 2012, specify 2012-01-01 2012-12-31");
+			System.out.println("  Dates given as yyyy-MM-dd; start date is inclusive but end date is exclusive (eg for all of 2012, specify 2012-01-01 2013-01-01");
 			return;
 		}
 
@@ -25,6 +27,7 @@ public class IRRStatsCreator {
 		Date endDate;
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			dateFormat.setTimeZone(Calendar.getInstance().getTimeZone());
 
 			startDate = dateFormat.parse(args[0]);
 			endDate = dateFormat.parse(args[1]);

@@ -7,6 +7,7 @@ import org.dspace.content.*;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.eperson.Group;
+import org.dspace.handle.HandleManager;
 import org.dspace.statistics.ObjectCount;
 import org.dspace.statistics.SolrLogger;
 
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Andrea Schweer schweer@waikato.ac.nz for the LCoNZ Institutional Research Repositories
@@ -23,6 +25,9 @@ import java.util.Map;
 class IRRStatsController {
 	private final static Logger log = Logger.getLogger(IRRStatsController.class);
 	protected static final DateFormat QUERY_FORMAT = new SimpleDateFormat(SolrLogger.DATE_FORMAT_8601);
+	static {
+		QUERY_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	private Map<Metric, Long> values = new HashMap<Metric, Long>();
 
@@ -37,7 +42,7 @@ class IRRStatsController {
 				Item item = items.next();
 				try {
 					if (item.isArchived() && !item.isWithdrawn() && isPublic(context, item)) {
-						if (addedBy(endDate, item)) {
+						if (addedBefore(endDate, item)) {
 							boolean addedInPeriod = addedSince(startDate, item);
 							if (hasPublicFulltext(context, item)) {
 								incrementValue(Metric.CountPublicFulltext);
@@ -96,6 +101,7 @@ class IRRStatsController {
 				return true;
 			}
 		}
+		System.out.println("Counting item as no public fulltext: item_id=" + item.getID() + "; " + HandleManager.resolveToURL(context, item.getHandle()));
 		return false;
 	}
 
@@ -110,6 +116,7 @@ class IRRStatsController {
 				return false;
 			}
 		}
+		System.out.println("Counting item as md-only: item_id=" + item.getID() + "; " + HandleManager.resolveToURL(context, item.getHandle()));
 		return true;
 	}
 
@@ -118,12 +125,15 @@ class IRRStatsController {
 		query.append(Constants.BITSTREAM);
 		query.append(" AND owningItem:");
 		query.append(item.getID());
-		query.append(" AND time:[");
-		query.append(QUERY_FORMAT.format(startDate));
-		query.append(" TO ");
-		query.append(QUERY_FORMAT.format(endDate));
-		query.append("]");
-		ObjectCount downloads = SolrLogger.queryTotal(query.toString(), "-isBot:true");
+
+		StringBuilder timeQuery = new StringBuilder();
+		timeQuery.append("time:[");
+		timeQuery.append(QUERY_FORMAT.format(startDate));
+		timeQuery.append(" TO ");
+		timeQuery.append(QUERY_FORMAT.format(endDate));
+		timeQuery.append("]");
+
+		ObjectCount downloads = SolrLogger.queryTotal(query.toString(), timeQuery.toString());
 		return downloads.getCount();
 	}
 
@@ -132,12 +142,15 @@ class IRRStatsController {
 		query.append(Constants.ITEM);
 		query.append(" AND id:");
 		query.append(item.getID());
-		query.append(" AND time:[");
-		query.append(QUERY_FORMAT.format(startDate));
-		query.append(" TO ");
-		query.append(QUERY_FORMAT.format(endDate));
-		query.append("]");
-		ObjectCount pageViews = SolrLogger.queryTotal(query.toString(), "-isBot:true");
+
+		StringBuilder timeQuery = new StringBuilder();
+		timeQuery.append("time:[");
+		timeQuery.append(QUERY_FORMAT.format(startDate));
+		timeQuery.append(" TO ");
+		timeQuery.append(QUERY_FORMAT.format(endDate));
+		timeQuery.append("]");
+
+		ObjectCount pageViews = SolrLogger.queryTotal(query.toString(), timeQuery.toString());
 		return pageViews.getCount();
 	}
 
@@ -157,11 +170,11 @@ class IRRStatsController {
 		values.put(metric, existing + amount);
 	}
 
-	private boolean addedBy(Date endDate, Item item) {
+	private boolean addedBefore(Date endDate, Item item) {
 		DCValue[] accessioned = item.getMetadata("dc", "date", "accessioned", Item.ANY);
 		try {
 			Date accessionDate = new DCDate(accessioned[0].value).toDate();
-			return !accessionDate.after(endDate);
+			return accessionDate.before(endDate);
 		} catch (RuntimeException e) {
 			return false;
 		}
