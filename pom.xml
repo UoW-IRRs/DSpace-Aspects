@@ -4,7 +4,7 @@
 
     <groupId>nz.ac.lconz.irr</groupId>
     <artifactId>lconz-aspects</artifactId>
-    <version>4.1-SNAPSHOT</version>
+    <version>4.1</version>
   <packaging>jar</packaging>
 
   <name>LCoNZ DSpace Aspects</name>
