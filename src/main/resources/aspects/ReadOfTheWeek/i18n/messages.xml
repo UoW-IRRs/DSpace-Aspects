@@ -23,5 +23,5 @@
     <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.head_find">Look up new Read of the Week</message>
     <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.no_current">Currently, no item is selected as the read of the week.</message>
     <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekPreviewForm.submit_confirm">Select as Read of the Week</message>
-    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekPreviewForm.success">Read of the Week changed successfully.</message>
+    <message key="xmlui.aspect.ReadOfTheWeek.ReadOfWeekForm.success">Read of the Week changed successfully.</message>
 </catalogue>
