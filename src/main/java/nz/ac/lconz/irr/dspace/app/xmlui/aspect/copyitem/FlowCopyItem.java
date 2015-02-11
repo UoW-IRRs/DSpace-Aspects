@@ -4,12 +4,11 @@ import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.aspect.administrative.FlowResult;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.DCValue;
 import org.dspace.content.Item;
+import org.dspace.content.Metadatum;
 import org.dspace.content.WorkspaceItem;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
-import org.dspace.workflow.WorkflowItem;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -45,7 +44,7 @@ public class FlowCopyItem {
 				String qualifier = components.length > 2 ? components[2] : null;
 
 				copy.clearMetadata(schema, element, qualifier, Item.ANY);
-				for (DCValue originalMD : original.getMetadata(schema, element, qualifier, Item.ANY)) {
+				for (Metadatum originalMD : original.getMetadata(schema, element, qualifier, Item.ANY)) {
 					copy.addMetadata(schema, element, qualifier, originalMD.language, originalMD.value, originalMD.authority, originalMD.confidence);
 				}
 			}

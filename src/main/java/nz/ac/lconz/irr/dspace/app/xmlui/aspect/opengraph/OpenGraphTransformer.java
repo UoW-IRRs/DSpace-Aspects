@@ -140,7 +140,7 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 
 		// description
 		String descriptionText = " ";
-		DCValue[] descriptions = item.getMetadata("dc", "description", "abstract", Item.ANY);
+		Metadatum[] descriptions = item.getMetadata("dc", "description", "abstract", Item.ANY);
 		if (descriptions.length > 0) {
 			try {
 				descriptionText = StringUtils.abbreviate(descriptions[0].value, 500);
@@ -151,7 +151,7 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 		meta.append(makePropertyStatement("og:description", descriptionText));
 
 		// published time
-		DCValue[] availableDates = item.getMetadata("dc", "date", "available", Item.ANY);
+		Metadatum[] availableDates = item.getMetadata("dc", "date", "available", Item.ANY);
 		if (availableDates.length > 0 && availableDates[0] != null && availableDates[0].value != null) {
 			DCDate available = new DCDate(availableDates[0].value);
 			String displayDate = available.toString();
@@ -171,8 +171,8 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 		meta.append(makePropertyStatement("article:section", parentName));
 
 		// tags
-		DCValue[] keywords = item.getMetadata("dc", "subject", null, Item.ANY);
-		for (DCValue keyword : keywords) {
+		Metadatum[] keywords = item.getMetadata("dc", "subject", null, Item.ANY);
+		for (Metadatum keyword : keywords) {
 			meta.append(makePropertyStatement("article:tag", keyword.value));
 		}
 
