@@ -35,18 +35,16 @@ public class CopyItemSelector implements Selector {
 				try {
 					String itemIDString = ObjectModelHelper.getRequest(objectModel).getParameter("itemID");
 					if (itemIDString == null || "".equals(itemIDString)) {
-						log.warn("No item present, cannot determine whether user can deposit copy");
 						return false;
 					}
 					itemID = Integer.valueOf(itemIDString);
 				} catch (NumberFormatException e) {
-					log.warn("Cannot parse item id, cannot determine whether user can deposit copy");
 					return false;
 				}
 			}
 			return CopyItemUtils.canDepositCopy(context, itemID) && "can-deposit-copy".equals(expression);
 		} catch (SQLException e) {
-			log.error("cannot determine whether current user can deposit copy of an item", e);
+			log.error("cannot determine whether current user can deposit copy of an item: " + e.getMessage(), e);
 			return false;
 		}
 	}
