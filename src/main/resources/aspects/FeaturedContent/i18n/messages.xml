@@ -17,16 +17,16 @@
 
     <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head">Featured Content</message>
 
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.trail">Manage Featured Content(trail)</message>
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.title">Manage Featured Content(title)</message>
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head1">Manage Featured Content(head1)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.trail">Manage Featured Content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.title">Manage Featured Content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head1">Manage Featured Content</message>
     <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head_current">Currently selected Featured Content</message>
     <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head_find">Look up new Featured Content</message>
     <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.no_current">Currently, no item is selected as the featured content.</message>
 
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.trail">Manage Featured Content Preview(trail)</message>
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.title">Manage Featured Content Preview(title)</message>
-    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.head1">Manage Featured Content Preview(head1)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.trail">Manage Featured Content Preview</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.title">Manage Featured Content Preview</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.head1">Manage Featured Content Preview</message>
 
 
     <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_img_location">Image location</message>

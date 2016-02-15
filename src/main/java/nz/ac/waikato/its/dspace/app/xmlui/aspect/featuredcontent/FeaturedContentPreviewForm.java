@@ -55,11 +55,10 @@ public class FeaturedContentPreviewForm extends AbstractDSpaceTransformer {
 
         Division contentDiv = div.addInteractiveDivision("featured-content-home",contextPath + "/admin/featured-content", Division.METHOD_GET, "secondary");
 
-        List form = contentDiv.addList("featured-content-submit-form", List.TYPE_FORM);
-
         Figure figureItem = contentDiv.addPara().addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
         figureItem.addContent(caption);
 
+        List form = contentDiv.addList("featured-content-submit-form", List.TYPE_FORM);
         Item imgLocPreviewItem = form.addItem();
         Text imgLocPreview = imgLocPreviewItem.addText("img_location_preview", Text.A_DISABLED);
         imgLocPreview.setValue(img_location);

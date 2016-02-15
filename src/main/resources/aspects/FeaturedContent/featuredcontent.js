@@ -5,7 +5,7 @@ importClass(Packages.org.dspace.app.xmlui.utils.FlowscriptUtils);
 importClass(Packages.org.dspace.app.xmlui.utils.ContextUtil);
 importClass(Packages.org.dspace.app.xmlui.aspect.administrative.FlowItemUtils);
 importClass(Packages.nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.FlowFeaturedContent);
-importClass(Packages.nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.CocoonFlowAspectDebug);
+importClass(Packages.nz.ac.waikato.its.dspace.app.xmlui.util.AspectCocoonFlowDebug);
 
 /**
  * Simple access method to access the current cocoon object model.
@@ -147,6 +147,7 @@ function assertAdministrator() {
  */
 function startManageFeaturedContent()
 {
+    //AspectCocoonFlowDebug.printDebugMsg(" 1. Entering the method step (1) ... ");
     assertAdministrator();
 
     doManageFeaturedContent();
