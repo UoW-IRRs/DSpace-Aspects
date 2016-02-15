@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<catalogue xml:lang="en" xmlns:i18n="http://apache.org/cocoon/i18n/2.1" xmlns="http://apache.org/cocoon/i18n/2.1">
+
+    <!--
+      The format used by all keys is as follows
+
+      xmlui.<Aspect>.<Java Class>.<name>
+
+      There are a few exceptions to this nameing format,
+      1) Some general keys are in the xmlui.general namespace
+         because they are used very frequently.
+      2) Some general keys which are specific to a particular aspect
+         may be found at xmlui.<Aspect> without specifiying a
+         particular java class.
+      -->
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head">Featured Content</message>
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.trail">Manage Featured Content(trail)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.title">Manage Featured Content(title)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head1">Manage Featured Content(head1)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head_current">Currently selected Featured Content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.head_find">Look up new Featured Content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.no_current">Currently, no item is selected as the featured content.</message>
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.trail">Manage Featured Content Preview(trail)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.title">Manage Featured Content Preview(title)</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentPreviewForm.head1">Manage Featured Content Preview(head1)</message>
+
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_img_location">Image location</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_link_target">Link target</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_caption">Caption</message>
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_img_location_desc">The external location of the Image. The image dimensions must be "540x300" pixels, landscape orientation.</message>
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.submit_confirm">Select as Featured Content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.success">Featured Contents changed successfully.</message>
+
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.set_featured_content">Set featured content</message>
+    <message key="xmlui.aspect.FeaturedContent.FeaturedContentForm.form_link_target_desc">The link to the featured content. Use a relative link (eg "/handle/10292/12345") if the content is in Scholarly Commons.</message>
+
+
+</catalogue>
