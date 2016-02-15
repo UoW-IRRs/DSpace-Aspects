@@ -37,9 +37,7 @@ public class ReadOfWeekTransformer extends AbstractDSpaceTransformer implements 
 		Item item = null;
 		try {
 			item = ReadOfWeekController.getFeaturedItem(context);
-		} catch (SQLException e) {
-			log.error("Cannot find featured item", e);
-		} catch (IOException e) {
+		} catch (SQLException | IOException e) {
 			log.error("Cannot find featured item", e);
 		}
 
@@ -61,7 +59,7 @@ public class ReadOfWeekTransformer extends AbstractDSpaceTransformer implements 
 		if (!file.exists()) {
 			return "0";
 		}
-		return Long.valueOf(file.lastModified());
+		return file.lastModified();
 	}
 
 	public SourceValidity getValidity() {

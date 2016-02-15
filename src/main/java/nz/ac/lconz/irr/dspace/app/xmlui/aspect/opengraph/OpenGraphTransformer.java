@@ -85,6 +85,12 @@ public class OpenGraphTransformer extends AbstractDSpaceTransformer implements C
 	}
 
 	@Override
+	public void recycle() {
+		validity = null;
+		super.recycle();
+	}
+
+	@Override
 	public void addPageMeta(PageMeta pageMeta) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
 		DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
 		if (!(dso instanceof Item))
