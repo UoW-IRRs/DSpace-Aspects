@@ -1,69 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>nz.ac.lconz.irr</groupId>
-    <artifactId>lconz-aspects</artifactId>
-    <version>5.2-SNAPSHOT</version>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nz.ac.lconz.irr</groupId>
+  <artifactId>lconz-aspects</artifactId>
+  <version>5.2-SNAPSHOT</version>
   <packaging>jar</packaging>
-
   <name>LCoNZ DSpace Aspects</name>
   <url>https://github.com/lconz-irr/DSpace-Aspects</url>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-	<version>2.3.2</version>
+        <version>2.3.2</version>
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.3</version>
+      </plugin>
     </plugins>
   </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.dspace</groupId>
-            <artifactId>dspace-xmlui</artifactId>
-            <type>jar</type>
-            <classifier>classes</classifier>
-            <version>5.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-    <scm>
-      <connection>scm:git:git://github.com/UoW-IRRs/DSpace-Aspects.git</connection>
-      <url>https://github.com/UoW-IRRs/DSpace-Aspects</url>
-      <developerConnection>scm:git:ssh://git@github.com/UoW-IRRs/DSpace-Aspects.git</developerConnection>
-    </scm>
-
-    <distributionManagement>
-      <!-- Publish versioned releases here -->
-      <repository>
-	<id>lconz-irr</id>
-	<name>LCoNZ IRR Releases</name>
-	<url>http://mvnrepo.its.waikato.ac.nz:8081/nexus/content/repositories/lconz-irr-releases/</url>
-      </repository>
-      
-      <!-- Publish snapshots here -->
-      <snapshotRepository>
-	<id>lconz-irr</id>
-	<name>LCoNZ IRR Snapshots</name>
-	<url>http://mvnrepo.its.waikato.ac.nz:8081/nexus/content/repositories/lconz-irr-snapshots/</url>
-      </snapshotRepository>
-    </distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.dspace</groupId>
+      <artifactId>dspace-xmlui</artifactId>
+      <type>jar</type>
+      <classifier>classes</classifier>
+      <version>5.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.3</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  <scm>
+    <connection>scm:git:git://github.com/UoW-IRRs/DSpace-Aspects.git</connection>
+    <url>https://github.com/UoW-IRRs/DSpace-Aspects</url>
+    <developerConnection>scm:git:ssh://git@github.com/UoW-IRRs/DSpace-Aspects.git</developerConnection>
+  </scm>
+  <distributionManagement>
+    <!-- Publish versioned releases here -->
+    <repository>
+      <id>lconz-irr</id>
+      <name>LCoNZ IRR Releases</name>
+      <url>http://mvnrepo.its.waikato.ac.nz:8081/nexus/content/repositories/lconz-irr-releases/</url>
+    </repository>
+    <!-- Publish snapshots here -->
+    <snapshotRepository>
+      <id>lconz-irr</id>
+      <name>LCoNZ IRR Snapshots</name>
+      <url>http://mvnrepo.its.waikato.ac.nz:8081/nexus/content/repositories/lconz-irr-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
