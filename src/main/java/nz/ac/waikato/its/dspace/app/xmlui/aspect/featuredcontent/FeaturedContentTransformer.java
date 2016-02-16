@@ -22,7 +22,6 @@ import java.util.HashMap;
  *
  */
 public class FeaturedContentTransformer extends AbstractDSpaceTransformer implements CacheableProcessingComponent {
-    //private static final Logger log = Logger.getLogger(FeaturedContentTransformer.class);
 
     @Override
     public void addBody(Body body) throws SAXException, WingException, SQLException, IOException, AuthorizeException {
@@ -40,8 +39,7 @@ public class FeaturedContentTransformer extends AbstractDSpaceTransformer implem
             Division featuredContentHome = body.addDivision("featured-content-home", "primary repository");
             Para para = featuredContentHome.addPara();
 
-            Figure figureItem = para.addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
-            figureItem.addContent(caption);
+            para.addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
         }
     }
 

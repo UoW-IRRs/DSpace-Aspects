@@ -53,12 +53,12 @@ public class FeaturedContentForm extends AbstractDSpaceTransformer {
         String link_target_param = parameters.getParameter("link_target",null);
         String caption_param = parameters.getParameter("caption",null);
 
+        /*
         String errorString = parameters.getParameter("errors",null);
-
         ArrayList<String> errors = new ArrayList<>();
         if (StringUtils.isNotEmpty(errorString))  {
             Collections.addAll(errors, errorString.split(","));
-        }
+        }*/
 
         Division div = body.addDivision("admin-featured-content", "primary administrative featured-content");
         div.setHead(T_head1);
@@ -74,9 +74,9 @@ public class FeaturedContentForm extends AbstractDSpaceTransformer {
               caption = currentItemMap.get("caption");
 
             Para currentPara = current.addPara();
-            Figure figureItem = currentPara.addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
+            currentPara.addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
 
-            figureItem.addContent(caption);
+            //figureItem.addContent(caption);
 
         }   else {
             current.addPara(T_no_current);

@@ -1,27 +1,26 @@
 package nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent;
 
 import org.apache.commons.lang3.StringUtils;
-import org.dspace.content.Item;
+import org.apache.log4j.Logger;
 import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Context;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
  * Created by jjung on 9/02/16.
  */
 public class FeaturedContentController {
+    private static final Logger log = Logger.getLogger(FeaturedContentController.class);
+
 
     static HashMap<String,String> getFeaturedItem(){
         HashMap<String,String> returnMap = null;
 
-        // configuration file location -> ${DSPACE_HOME}/config/modules/lconz-aspect.cfg
-        String featuredItemFile = ConfigurationManager.getProperty("lconz-aspect", "featured.content.file");
-        if (StringUtils.isEmpty(featuredItemFile)) {
+        // configuration file location -> ${dspace.dir}/var/featured-content/current.properties
+        String featuredItemFile = FeaturedContentController.getFeaturedItemFile();
+        if( featuredItemFile == null){
             return null;
         }
 
@@ -29,12 +28,10 @@ public class FeaturedContentController {
         InputStream is = null;
 
         try {
-            // file location -> ${DSPACE_HOME}/config/modules/featured-content
+            // file location ->  ${dspace.src}/dspace/config/modules/uow-aspects.cfg
             File propFile = new File(featuredItemFile);
-            if (!propFile.exists()) {
-                propFile.createNewFile();
-            }
-            props.load(new FileInputStream(propFile));
+            is = new FileInputStream(propFile);
+            props.load(is);
 
             String img_location = StringUtils.trimToNull(props.getProperty("img_location"));
             String link_target = StringUtils.trimToNull(props.getProperty("link_target"));
@@ -49,18 +46,20 @@ public class FeaturedContentController {
             }
 
         } catch (IOException e) {
+            log.warn("Problem reading featured content information from file: " + e.getMessage(), e);
         } finally{
             try {
                if(is != null){ is.close();}
             } catch (IOException e) {
+                log.warn("Problem closing InputStream: " + e.getMessage(), e);
             }
         }
         return returnMap;
     }
 
     static void setFeaturedItem(String img_location, String link_target, String caption) throws IOException {
-        String featuredItemFile = ConfigurationManager.getProperty("lconz-aspect", "featured.content.file");
-        if (!StringUtils.isEmpty(featuredItemFile)) {
+        String featuredItemFile = FeaturedContentController.getFeaturedItemFile();
+        if( featuredItemFile != null){
             Properties props = new Properties();
 
             props.setProperty("img_location", img_location);
@@ -74,15 +73,39 @@ public class FeaturedContentController {
                 props.setProperty("link_target", link_target);
                 props.setProperty("caption", caption);
 
-                props.store(new FileOutputStream(featuredItemFile, false), null);
+
+                File propFile = new File(featuredItemFile);
+                File parentDir = new File(propFile.getParent());
+                // in case of missing parent directory (do not remove)
+                if(!parentDir.exists()){
+                    parentDir.mkdirs();
+                }
+
+                os = new FileOutputStream(featuredItemFile, false);
+                props.store(os, null);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn("Problem writing featured content information from file: " + e.getMessage(), e);
             } finally{
                 try {
-                   if(os != null) { os.close();}
+                    if(os != null) { os.close();}
                 } catch (IOException e) {
+                    log.warn("Problem closing OutputStream: " + e.getMessage(), e);
                 }
             }
+
+        }   else {
+            log.warn("Problem reading featured-content configuration", new Exception("Problem reading featured-content configuration"));
         }
     }
+
+    static String getFeaturedItemFile(){
+        String featuredItemFile = StringUtils.trimToNull(ConfigurationManager.getProperty("uow-aspects", "featured-content.datafile"));
+        if (featuredItemFile == null) {
+            log.warn("Problem reading featured-content configuration.", new Exception("Problem reading featured-content configuration."));
+            return null;
+        }
+        return featuredItemFile;
+    }
+
+
 }

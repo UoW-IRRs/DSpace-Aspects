@@ -30,7 +30,7 @@ public class FeaturedContentPreviewForm extends AbstractDSpaceTransformer {
     private static final Message T_cancel = message("xmlui.ChoiceLookupTransformer.cancel");
 
     @Override
-    public void addPageMeta(PageMeta pageMeta) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
+    public void addPageMeta(PageMeta pageMeta) throws SAXException, WingException, SQLException, IOException, AuthorizeException {
         pageMeta.addTrailLink(contextPath + "/", T_dspace_home);
         pageMeta.addTrail().addContent(T_featuredcontent_preview_trail);
         pageMeta.addMetadata("title").addContent(T_featuredcontent_preview_title);
@@ -43,20 +43,21 @@ public class FeaturedContentPreviewForm extends AbstractDSpaceTransformer {
         String img_location = parameters.getParameter("img_location", null);
         String link_target = parameters.getParameter("link_target", null);
         String caption = parameters.getParameter("caption", null);
-        String errorString = parameters.getParameter("errors", null);
 
+        /*String errorString = parameters.getParameter("errors", null);
         ArrayList<String> errors = new ArrayList<>();
         if (StringUtils.isNotEmpty(errorString))  {
             Collections.addAll(errors, errorString.split(","));
-        }
+        }*/
 
         Division div = body.addDivision("admin-featured-content", "primary administrative featured-content");
         div.setHead(T_preview_head1);
 
-        Division contentDiv = div.addInteractiveDivision("featured-content-home",contextPath + "/admin/featured-content", Division.METHOD_GET, "secondary");
+        Division contentDiv;
+        contentDiv = div.addInteractiveDivision("featured-content-home",contextPath + "/admin/featured-content", Division.METHOD_GET, "secondary");
 
-        Figure figureItem = contentDiv.addPara().addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
-        figureItem.addContent(caption);
+        contentDiv.addPara().addFigure(img_location, link_target, caption, List.TYPE_SIMPLE);
+        //figureItem.addContent(caption);
 
         List form = contentDiv.addList("featured-content-submit-form", List.TYPE_FORM);
         Item imgLocPreviewItem = form.addItem();

@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <!--
+    Aspect to include a "feature content" item on the repository home page
 
-    Aspect to include a "read of the week" item on the repository home page
-
+    Jun Jung <jjung@waikato.ac.nz>
     Andrea Schweer <schweer@waikato.ac.nz>
-    Stefan Mutter <stefanm@waikato.ac.nz>
-
 -->
 
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
