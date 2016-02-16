@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+    Aspect to include a "feature content" item on the repository home page
+
+    Jun Jung <jjung@waikato.ac.nz>
+    Andrea Schweer <schweer@waikato.ac.nz>
+-->
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+    <map:components>
+        <map:matchers default="wildcard"/>
+        <map:transformers>
+            <map:transformer name="FeaturedContentTransformer" src="nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.FeaturedContentTransformer"/>
+            <map:transformer name="FeaturedContentForm" src="nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.FeaturedContentForm"/>
+            <map:transformer name="FeaturedContentPreviewForm" src="nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.FeaturedContentPreviewForm"/>
+            <map:transformer name="Navigation" src="nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent.Navigation"/>
+        </map:transformers>
+        <map:selectors>
+            <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
+        </map:selectors>
+    </map:components>
+
+    <map:flow language="javascript">
+        <map:script src="featuredcontent.js"/>
+    </map:flow>
+
+    <map:pipelines>
+        <map:pipeline>
+
+            <!--
+               This is the entry / resume point for the
+               read of the week admin pages
+             -->
+            <map:match pattern="admin/featured-content">
+                <map:match type="request" pattern="administrative-continue">
+                    <map:call continuation="{1}"/>
+                </map:match>
+                <map:call function="startManageFeaturedContent"/>
+            </map:match>
+
+            <map:generate/>
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+                    <map:transform type="Navigation"/>
+                </map:when>
+            </map:select>
+
+            <!-- Match dspace home page -->
+            <map:match pattern="">
+                <map:transform type="FeaturedContentTransformer"/>
+                <map:serialize type="xml"/>
+            </map:match>
+
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+
+                    <!-- Flow pages
+                        These pages may only be reached through a flow script. While typicaly all
+                        the user sees in their url bar is a short url like /admin/epeople or
+                        /admin/groups, in reality there is another url being used. The flow scripts
+                        always operate on these simple url, but once the particular state is determined
+                        an distinquising part is appended to the url for the particular state. Below are
+                        all those url.
+                    -->
+                    <map:match type="WildcardParameterMatcher" pattern="true">
+                        <map:parameter name="parameter-name" value="flow"/>
+                        <map:parameter name="flow" value="{flow-attribute:flow}"/>
+
+
+                        <!--
+                            Allow the user to query stored content from local property file
+                         -->
+                        <map:match pattern="admin/featured-content/status">
+                            <map:transform type="FeaturedContentForm">
+                                <map:parameter name="img_location" value="{flow-attribute:img_location}"/>
+                                <map:parameter name="link_target" value="{flow-attribute:link_target}"/>
+                                <map:parameter name="caption" value="{flow-attribute:caption}"/>
+                                <map:parameter name="errors" value="{flow-attribute:errors}"/>
+                            </map:transform>
+                        </map:match>
+                        <map:match pattern="admin/featured-content/preview">
+                            <map:transform type="FeaturedContentPreviewForm">
+                                <map:parameter name="img_location" value="{flow-attribute:img_location}"/>
+                                <map:parameter name="link_target" value="{flow-attribute:link_target}"/>
+                                <map:parameter name="caption" value="{flow-attribute:caption}"/>
+                            </map:transform>
+                        </map:match>
+
+                    </map:match>
+                </map:when>
+            </map:select>
+
+            <!-- Not a URL we care about, so just pass it on. -->
+            <map:serialize type="xml"/>
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>
