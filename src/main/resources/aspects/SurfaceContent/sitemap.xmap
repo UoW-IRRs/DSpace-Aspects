@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+    <map:components>
+        <map:transformers>
+            <map:transformer name="SurfaceCollectionAuthorsTransformer"
+                             src="nz.ac.waikato.its.dspace.app.xmlui.aspect.surfacecontent.SurfaceCollectionAuthorsTransformer"/>
+        </map:transformers>
+    </map:components>
+    
+    <map:pipelines>
+        <map:pipeline>
+            <map:generate />
+
+            <map:match pattern="">
+                <map:transform type="SurfaceCollectionAuthorsTransformer"/>
+            </map:match>
+
+            <map:serialize type="xml"/>
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>
