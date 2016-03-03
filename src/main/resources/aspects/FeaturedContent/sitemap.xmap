@@ -25,6 +25,16 @@
     </map:flow>
 
     <map:pipelines>
+	<map:pipeline>
+		<map:generate/>
+
+            <!-- Match dspace home page -->
+            <map:match pattern="">
+                <map:transform type="FeaturedContentTransformer"/>
+            </map:match>
+
+		<map:serialize/>
+	</map:pipeline>
         <map:pipeline>
 
             <!--
@@ -45,13 +55,6 @@
                     <map:transform type="Navigation"/>
                 </map:when>
             </map:select>
-
-            <!-- Match dspace home page -->
-            <map:match pattern="">
-                <map:transform type="FeaturedContentTransformer"/>
-                <map:serialize type="xml"/>
-            </map:match>
-
 
             <map:select type="AuthenticatedSelector">
                 <map:when test="administrator">
