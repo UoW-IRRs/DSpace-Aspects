@@ -11,15 +11,13 @@ import org.dspace.app.xmlui.wing.element.Body;
 import org.dspace.app.xmlui.wing.element.Division;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Collection;
-import org.dspace.content.Community;
-import org.dspace.content.DSpaceObject;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.discovery.*;
 import org.dspace.discovery.configuration.DiscoveryConfigurationParameters;
-import org.dspace.handle.HandleManager;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -30,8 +28,10 @@ import java.util.*;
  */
 @SurfaceContentDataProvider(key = "top-collection-authors")
 public class SurfaceCollectionAuthorsTransformer extends AbstractDSpaceTransformer {
+    public static final String CONFIG_KEY_DATAFILE = "surface-content.collection-top-authors.datafile";
+    public static final String CONFIG_KEY_NUM_AUTHORS = "surface-content.collection-top-authors.num-authors";
 
-    protected final Random randomGenerator;
+    public static final String MODULE = "uow-aspects";
 
     protected List<String> parentHandles;
     protected int collectionId;
@@ -68,23 +68,35 @@ public class SurfaceCollectionAuthorsTransformer extends AbstractDSpaceTransform
     public void setup(SourceResolver resolver, Map objectModel, String src, Parameters parameters) throws ProcessingException, SAXException, IOException {
         super.setup(resolver, objectModel, src, parameters);
 
-        String parentHandlesParam = ConfigurationManager.getProperty("uow-aspects", "surface-content.collection-top-authors.parent-handles");
-        if (StringUtils.isNotBlank(parentHandlesParam)) {
-            parentHandles = Arrays.asList(parentHandlesParam.split(",\\s*"));
-        }
-
         try {
-            List<Collection> eligibleCollections = findEligibleCollections();
-            if (eligibleCollections.isEmpty()) {
-                getLogger().warn("No eligible collections found.");
-                return;
+            collectionId = -1;
+            String fileName = ConfigurationManager.getProperty(MODULE, CONFIG_KEY_DATAFILE);
+            if (StringUtils.isBlank(fileName)) {
+                fileName = ConfigurationManager.getProperty("dspace.dir") + "/var/surface-content/collection-top-authors";
+                getLogger().info("No data file configured for " + MODULE + " module, property " + CONFIG_KEY_DATAFILE + "; " +
+                        "falling back to default (" + fileName + ")");
             }
 
-            collectionId = findRandomCollection(eligibleCollections);
+            File file = new File(fileName);
+            if (file.exists() && file.canRead()) {
+                int candidate;
+                try (Scanner scanner = new Scanner(file)) {
+                    candidate = scanner.nextInt();
+                }
 
-            int numAuthors = ConfigurationManager.getIntProperty("uow-aspects", "surface-content.collection-top-authors.num-authors", 5);
-            authorItemCounts = populateAuthorItemCounts(collectionId, numAuthors);
-        } catch (SQLException e) {
+                if (Collection.find(context, candidate) != null) {
+                    collectionId = candidate;
+                }
+            }
+
+            if (collectionId != -1) {
+                int numAuthors = ConfigurationManager.getIntProperty(MODULE, CONFIG_KEY_NUM_AUTHORS, 5);
+                authorItemCounts = populateAuthorItemCounts(collectionId, numAuthors);
+            } else {
+                getLogger().warn("Could not find or read file, or could not read valid collection id, for collection top authors data: "
+                        + fileName);
+            }
+        } catch (IOException | SQLException e) {
             getLogger().error("Caught exception trying to surface top authors by collection: " + e.getMessage(), e);
         }
     }
@@ -92,9 +104,14 @@ public class SurfaceCollectionAuthorsTransformer extends AbstractDSpaceTransform
     protected List<Pair<String, Integer>> populateAuthorItemCounts(int collectionId, int numAuthors) {
         List<Pair<String, Integer>> result = new ArrayList<>();
 
+        if (collectionId == -1) {
+            getLogger().error("No valid collection id specified, cannot populate author item counts");
+            return result;
+        }
+
         // construct + perform solr query
         DiscoverQuery query = new DiscoverQuery();
-        query.addFilterQueries("read:g0", "location.coll:" + collectionId, "search.resourcetype:2");
+        query.addFilterQueries("read:g0", "location.coll:" + collectionId, "search.resourcetype:" + Constants.ITEM);
         query.addFacetField(new DiscoverFacetField(
                 "author_keyword",
                 DiscoveryConfigurationParameters.TYPE_STANDARD,
@@ -120,34 +137,8 @@ public class SurfaceCollectionAuthorsTransformer extends AbstractDSpaceTransform
         return result;
     }
 
-    protected int findRandomCollection(List<Collection> eligibleCollections) {
-        int randomIndex = randomGenerator.nextInt(eligibleCollections.size());
-        return eligibleCollections.get(randomIndex).getID();
-    }
-
-    protected List<Collection> findEligibleCollections() throws SQLException {
-        List<Collection> eligibleCollections = new ArrayList<>();
-        if (parentHandles == null) {
-            // no restriction -- just get all readable collections
-            eligibleCollections.addAll(Arrays.asList(Collection.findAuthorized(context, null, Constants.READ)));
-        } else {
-            for (String parentHandle : parentHandles) {
-                DSpaceObject parent = HandleManager.resolveToObject(context, parentHandle);
-                if (parent == null || !(parent instanceof Community)) {
-                    getLogger().warn("Parent handle " + parentHandle + " does not refer to a community, skipping it.");
-                    continue;
-                }
-                Community parentCommunity = (Community) parent;
-                // all readable collections in this community are eligible
-                eligibleCollections.addAll(Arrays.asList(Collection.findAuthorized(context, parentCommunity, Constants.READ)));
-            }
-        }
-        return eligibleCollections;
-    }
-
     public SurfaceCollectionAuthorsTransformer() {
         super();
-        randomGenerator = new Random();
     }
 
     @Override
