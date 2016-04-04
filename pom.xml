@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nz.ac.lconz.irr</groupId>
   <artifactId>lconz-aspects</artifactId>
-  <version>5.3-SNAPSHOT</version>
+  <version>5.4-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>LCoNZ DSpace Aspects</name>
   <url>https://github.com/lconz-irr/DSpace-Aspects</url>
