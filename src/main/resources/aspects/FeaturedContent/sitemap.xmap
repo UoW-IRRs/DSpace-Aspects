@@ -25,46 +25,41 @@
     </map:flow>
 
     <map:pipelines>
-	<map:pipeline>
-		<map:generate/>
+        <map:pipeline>
+
+            <map:select type="AuthenticatedSelector">
+                <map:when test="administrator">
+                    <!--
+                       This is the entry / resume point for the
+                       read of the week admin pages
+                     -->
+                    <map:match pattern="admin/featured-content">
+                        <map:match type="request" pattern="administrative-continue">
+                            <map:call continuation="{1}"/>
+                        </map:match>
+                        <map:call function="startManageFeaturedContent"/>
+                    </map:match>
+                </map:when>
+            </map:select>
+
+            <map:generate/>
 
             <!-- Match dspace home page -->
             <map:match pattern="">
                 <map:transform type="FeaturedContentTransformer"/>
             </map:match>
 
-		<map:serialize/>
-	</map:pipeline>
-        <map:pipeline>
-
-            <!--
-               This is the entry / resume point for the
-               read of the week admin pages
-             -->
-            <map:match pattern="admin/featured-content">
-                <map:match type="request" pattern="administrative-continue">
-                    <map:call continuation="{1}"/>
-                </map:match>
-                <map:call function="startManageFeaturedContent"/>
-            </map:match>
-
-            <map:generate/>
-
-            <map:select type="AuthenticatedSelector">
-                <map:when test="administrator">
-                    <map:transform type="Navigation"/>
-                </map:when>
-            </map:select>
+            <map:transform type="Navigation"/>
 
             <map:select type="AuthenticatedSelector">
                 <map:when test="administrator">
 
                     <!-- Flow pages
-                        These pages may only be reached through a flow script. While typicaly all
+                        These pages may only be reached through a flow script. While typically all
                         the user sees in their url bar is a short url like /admin/epeople or
                         /admin/groups, in reality there is another url being used. The flow scripts
                         always operate on these simple url, but once the particular state is determined
-                        an distinquising part is appended to the url for the particular state. Below are
+                        an distinguishing part is appended to the url for the particular state. Below are
                         all those url.
                     -->
                     <map:match type="WildcardParameterMatcher" pattern="true">
@@ -95,7 +90,7 @@
                 </map:when>
             </map:select>
 
-            <!-- Not a URL we care about, so just pass it on. -->
+            <!-- Generate this aspect's contribution to the DRI -->
             <map:serialize type="xml"/>
         </map:pipeline>
     </map:pipelines>

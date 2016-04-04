@@ -44,7 +44,7 @@ public class FeaturedContentTransformer extends AbstractDSpaceTransformer implem
     }
 
     public Serializable getKey() {
-        String featuredItemFile = ConfigurationManager.getProperty("aut-aspect", "featured.content.file");
+        String featuredItemFile = FeaturedContentController.getFeaturedItemFile();
         if (StringUtils.isEmpty(featuredItemFile)) {
             return "1";
         }

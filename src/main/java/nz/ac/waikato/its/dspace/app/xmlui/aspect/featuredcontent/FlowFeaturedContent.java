@@ -1,5 +1,6 @@
 package nz.ac.waikato.its.dspace.app.xmlui.aspect.featuredcontent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dspace.app.xmlui.aspect.administrative.FlowResult;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.content.Item;
@@ -28,13 +29,27 @@ import java.sql.SQLException;
  *
  */
 public class FlowFeaturedContent {
-    private static final Message T_success = new Message("default", "xmlui.aspect.FeaturedContent.FeaturedContentForm.success");
+    private static final Message T_success = new Message("default", "xmlui.aspect.FeaturedContent.success");
+    private static final Message T_missing_required_fields = new Message("default", "xmlui.aspect.FeaturedContent.missing_required_fields");
 
     public static FlowResult processPickFeaturedContent(String img_location, String link_target, String caption) throws SQLException, IOException {
-
-        FlowResult result ;
-        result = new FlowResult();
+        FlowResult result = new FlowResult();
         result.setContinue(false);
+
+        if (StringUtils.isBlank(img_location)) {
+            result.addError("img_location");
+        }
+        if (StringUtils.isBlank(link_target)) {
+            result.addError("link_target");
+        }
+        if (StringUtils.isBlank(caption)) {
+            result.addError("caption");
+        }
+        if (result.getErrors() != null && !result.getErrors().isEmpty()) {
+            result.setMessage(T_missing_required_fields);
+            result.setOutcome(false);
+            return result;
+        }
 
         FeaturedContentController.setFeaturedItem(img_location, link_target, caption);
 
